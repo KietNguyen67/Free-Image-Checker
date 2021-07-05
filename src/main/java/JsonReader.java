@@ -1,10 +1,16 @@
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class JsonReader {
 
@@ -35,15 +41,26 @@ public class JsonReader {
         System.out.println(json.getClass());
         System.out.println(json.get("results"));
         JSONArray recs = json.getJSONArray("results");
-
+        ArrayList<String> image = new ArrayList<>();
         for(int i = 0; i < recs.length(); i++) {
             JSONObject rec = recs.getJSONObject(i);
             JSONObject test = rec.getJSONObject("urls");
+            image.add(test.get("small").toString());
             System.out.println(test.get("small"));
-//            for(int j = 0; j < test.length(); j++) {
-//                JSONObject a = test.getJSONObject(j);
-//                System.out.println(a.getJSONObject("small"));
-//            }
         }
+        System.out.println(image.get(0));
+        URL url = new URL(image.get(0));
+        BufferedImage i = ImageIO.read(url);
+        JFrame frame = new JFrame("FrameDemo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JLabel emptyLabel = new JLabel(new ImageIcon(i));
+        emptyLabel.setPreferredSize(new Dimension(175, 100));
+        frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
+
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+
     }
 }
